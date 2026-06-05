@@ -69,6 +69,7 @@ cp "$SETUP_DIR"/per-repo/.husky/pre-commit "$TARGET_DIR/.husky/"
 cp "$SETUP_DIR"/per-repo/.husky/prepare-commit-msg "$TARGET_DIR/.husky/"
 cp "$SETUP_DIR"/per-repo/.husky/post-merge "$TARGET_DIR/.husky/"
 cp "$SETUP_DIR"/per-repo/.husky/pre-tag "$TARGET_DIR/.husky/"
+cp "$SETUP_DIR"/per-repo/.husky/.gitignore "$TARGET_DIR/.husky/"
 chmod +x "$TARGET_DIR"/.husky/pre-commit
 chmod +x "$TARGET_DIR"/.husky/prepare-commit-msg
 chmod +x "$TARGET_DIR"/.husky/post-merge
@@ -121,11 +122,14 @@ if [ "$IS_NODE" = true ]; then
   echo "  npx husky install"
   echo ""
   echo -e "${YELLOW}Add to package.json scripts:${NC}"
+  echo '  "prepare":    "husky install",'
+  echo '  "test":       "your test command",'
+  echo '  "lint":       "your lint command",'
+  echo '  "type-check": "tsc --noEmit",'
   echo '  "auto-commit": "node scripts/auto-commit.js",'
-  echo '  "auto-pr": "node scripts/auto-pr.js",'
-  echo '  "auto-jira": "node scripts/auto-jira.js",'
-  echo '  "dashboard": "node scripts/dashboard.js",'
-  echo '  "prepare": "husky install"'
+  echo '  "auto-pr":    "node scripts/auto-pr.js",'
+  echo '  "auto-jira":  "node scripts/auto-jira.js",'
+  echo '  "dashboard":  "node scripts/dashboard.js"'
 fi
 
 echo ""
