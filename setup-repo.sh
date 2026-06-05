@@ -76,6 +76,18 @@ chmod +x "$TARGET_DIR"/.husky/pre-tag
 echo -e "${GREEN}✅ Hooks copied to .husky/${NC}"
 
 # ----------------------------------------------------------------------------
+# 2b. Copy GitHub Actions workflows
+# ----------------------------------------------------------------------------
+echo -e "${BLUE}Copying GitHub Actions workflows...${NC}"
+mkdir -p "$TARGET_DIR/.github/workflows"
+cp "$SETUP_DIR"/per-repo/.github/workflows/pr-validation.yml "$TARGET_DIR/.github/workflows/"
+cp "$SETUP_DIR"/per-repo/.github/workflows/on-merge.yml "$TARGET_DIR/.github/workflows/"
+echo -e "${GREEN}✅ Workflows copied to .github/workflows/${NC}"
+echo -e "${YELLOW}   ⚠️  Remember to add Jira secrets in GitHub:${NC}"
+echo -e "${YELLOW}      Settings → Secrets and variables → Actions${NC}"
+echo -e "${YELLOW}      Add: JIRA_HOST, JIRA_EMAIL, JIRA_API_TOKEN${NC}"
+
+# ----------------------------------------------------------------------------
 # 3. Create .env.local if it doesn't exist
 # ----------------------------------------------------------------------------
 if [ ! -f "$TARGET_DIR/.env.local" ]; then
@@ -122,8 +134,12 @@ echo -e "${GREEN}  Repo setup complete!${NC}"
 echo -e "${GREEN}========================================${NC}"
 echo ""
 echo -e "${YELLOW}DON'T FORGET:${NC}"
-echo "  1. Edit .env.local with your real credentials"
+echo "  1. Edit .env.local with your real credentials (for local scripts)"
 echo "  2. Run: npm install --save-dev minimist husky"
 echo "  3. Add the npm scripts shown above to package.json"
 echo "  4. Test: npm run auto-commit -- --help"
+echo "  5. Add GitHub secrets for Actions (Settings → Secrets → Actions):"
+echo "       JIRA_HOST, JIRA_EMAIL, JIRA_API_TOKEN"
+echo "  6. Commit & push .github/workflows/ to activate the Actions"
+echo "  7. (Optional) Set branch protection to require the PR checks"
 echo ""
