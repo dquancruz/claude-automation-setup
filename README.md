@@ -1,147 +1,103 @@
-# Claude Automation Setup
+# claude-automation-setup
 
-Level 3 automation setup for Claude Code: 11 agents, 6 skills, 4 scripts, and 4 git hooks that turn feature descriptions into Jira tickets, commits, PRs, and releases.
+Setup portable de automatización para Claude Code y herramientas compatibles (Cursor, GitHub Copilot, Gemini CLI, Codex). Incluye 12 agentes, 12 skills, scripts de automatización y hooks git que convierten descripciones de features en tickets Jira, commits, PRs y releases.
 
-## What's Inside
+## Arquitectura
 
 ```
 claude-automation-setup/
-├── install.sh              # Installs agents + skills globally to ~/.claude/
-├── setup-repo.sh           # Sets up an individual repo (scripts, hooks, .env)
-├── .env.example            # Credentials template (copy to .env.local)
-├── .gitignore              # Blocks secrets from being committed
-├── global/                 # Goes to ~/.claude/ (once, all repos)
-│   ├── agents/             # 11 agents
-│   └── skills/             # 6 skills
-├── per-repo/               # Goes into each repo that uses the tools
-│   ├── scripts/            # 4 executable scripts
-│   └── .husky/             # 4 git hooks
-└── docs/                   # Setup guides and reference
+├── install.sh                    # Instala agentes y skills en ~/.claude/
+├── setup-repo.sh                 # Configura un repo destino con todos los archivos
+├── USAGE.md                      # Guía de uso e instalación
+├── .env.example                  # Template de credenciales
+├── global/                       # Configuración global (va a ~/.claude/)
+│   ├── agents/                   # 12 agentes especializados
+│   └── skills/                   # 12 skills en formato portable (carpeta/SKILL.md)
+├── per-repo/                     # Archivos que van en cada proyecto
+│   ├── AGENTS.md                 # Template SSOT — instrucciones del proyecto
+│   ├── setup-portability.sh      # Genera symlinks cross-tool (CLAUDE.md, GEMINI.md, etc.)
+│   ├── .mcp.json                 # MCP servers (GitHub, Git, Jira)
+│   ├── .claude/
+│   │   ├── rules/                # Rules path-scoped (backend, frontend, testing, design, security)
+│   │   ├── hooks/                # Hooks Claude Code (block-secrets, lint-after-write)
+│   │   └── settings.json         # Registro de hooks
+│   ├── .cursor/
+│   │   └── rules/                # Equivalentes Cursor (.mdc)
+│   ├── .github/workflows/        # GitHub Actions (pr-validation, on-merge)
+│   ├── .husky/                   # Git hooks (pre-commit, prepare-commit-msg, etc.)
+│   └── scripts/                  # Scripts de automatización (auto-commit, auto-pr, etc.)
+└── docs/                         # Documentación de referencia
+    ├── context-budget.md
+    ├── MCPS-configuracion-completa.md
+    ├── GITHUB-ACTIONS-SETUP.md
+    ├── HOOKS-husky-complete.md
+    └── SETUP-COMPLETO-NIVEL-3.md
 ```
 
-## Two Levels of Installation
+## Principio de diseño: AGENTS.md como SSOT
 
-This is the key concept: **some things are global, some are per-repo.**
+`AGENTS.md` es el **Single Source of Truth** de instrucciones de cada proyecto. Los demás archivos de instrucciones son **symlinks** que apuntan a él:
 
-### Global (install once, works everywhere)
-
-Agents and skills live in `~/.claude/` and apply to every repo automatically.
-
-```bash
-./install.sh
+```
+AGENTS.md          ← editar solo aquí
+CLAUDE.md          → symlink a AGENTS.md
+GEMINI.md          → symlink a AGENTS.md
+.github/copilot-instructions.md → symlink a ../AGENTS.md
+.cursor/mcp.json   → symlink a ../.mcp.json
 ```
 
-This copies:
-- `global/agents/*` → `~/.claude/agents/`
-- `global/skills/*` → `~/.claude/skills/`
+Una edición en `AGENTS.md` se refleja en todas las herramientas.
 
-(It backs up any existing agents/skills first.)
+## Portabilidad por capa
 
-### Per-Repository (run in each project)
+| Elemento | Archivo | Claude Code | Cursor | Copilot | Gemini | Codex |
+|----------|---------|:-----------:|:------:|:-------:|:------:|:-----:|
+| Instrucciones | `AGENTS.md` | ✅ symlink | ✅ nativo | ✅ symlink | ✅ symlink | ✅ nativo |
+| Skills | `SKILL.md` | ✅ | ✅ apuntando | 🟡 | ✅ apuntando | ✅ |
+| MCP | `.mcp.json` | ✅ | ✅ symlink | 🟡 | 🟡 | 🟡 |
+| Rules | `.claude/rules` + `.cursor/rules` | ✅ | ✅ `.mdc` | 🟡 | 🟡 | 🟡 |
+| Hooks | `.claude/hooks` | ✅ | ❌ | ❌ | ❌ | ❌ |
+| Agentes | `~/.claude/agents` | ✅ | ❌ | ❌ | ❌ | ❌ |
 
-Scripts, hooks, and credentials live **inside each repo** — they are project
-tooling, not Claude config, so they do NOT go in `.claude/`.
+## Los 12 Agentes
 
-From the root of a repo you want to set up:
+| Agente | Especialización |
+|--------|----------------|
+| `agent-orchestrator` | Orquestador maestro — punto de entrada para features completas |
+| `solutions-expert` | Arquitectura y diseño de sistemas |
+| `ticket-orchestrator` | Jerarquía Jira (Epic → Story → Task) |
+| `backend-expert` | NestJS / FastAPI / MongoDB |
+| `iot-backend-expert` | Raspberry Pi / GPIO / edge computing |
+| `frontend-expert` | React / Next.js / Astro + a11y + diseño |
+| `aws-architect` | Arquitectura cloud AWS |
+| `cdk-expert` | Infrastructure as Code (CDK) |
+| `pr-manager` | Pull requests formato TELUS |
+| `code-reviewer-pro` | Review general + scanning de seguridad ligero |
+| `security-expert` | AppSec profundo (auth, crypto, IAM, secretos) |
+| `documentation-generator` | Docs + versionado semántico + GitHub Releases |
 
-```bash
-/path/to/claude-automation-setup/setup-repo.sh
-```
+## Las 12 Skills
 
-This copies:
-- `per-repo/scripts/*` → `<repo>/scripts/`
-- `per-repo/.husky/*` → `<repo>/.husky/`
-- `.env.example` → `<repo>/.env.local` (then you fill it in)
-- Adds `.env.local` to the repo's `.gitignore`
+| Skill | Dominio |
+|-------|---------|
+| `auto-commit` | Conventional Commits |
+| `pr-formatter` | Formato de PRs (TELUS) |
+| `semantic-versioning` | SemVer + CHANGELOG + releases |
+| `iot-backend` | IoT / Raspberry Pi |
+| `auto-pr` | Creación automática de PRs |
+| `jira-integration` | Integración con Jira |
+| `design-system` | Presets de diseño (velocity / vice / quiet) |
+| `immersive-3d` | WebGL / R3F / experiencias inmersivas |
+| `threat-modeling` | Modelado de amenazas STRIDE |
+| `secure-coding` | OWASP Top 10 por stack |
+| `dependency-and-secrets-audit` | SCA + escaneo de secretos + SBOM |
+| `cloud-iac-security` | Seguridad en CDK / AWS |
 
-## Where Things Go (Important)
+## Documentación
 
-| File | Location | Why |
-|------|----------|-----|
-| agents/ | `~/.claude/agents/` | Claude config, global |
-| skills/ | `~/.claude/skills/` | Claude config, global |
-| scripts/ | `<repo>/scripts/` | Run by npm, project tooling |
-| .husky/ | `<repo>/.husky/` | Where git/husky looks for hooks |
-| .env.local | `<repo>/.env.local` | Where dotenv reads secrets |
-
-**Agents and skills do NOT need to be duplicated per repo.** Once in `~/.claude/`
-they work everywhere. Only put an agent in `<repo>/.claude/agents/` if you want a
-version specific to that one project — Claude Code merges global + project agents.
-
-## Quick Start
-
-```bash
-# 1. Clone this repo
-git clone <your-repo-url> claude-automation-setup
-cd claude-automation-setup
-
-# 2. Install agents + skills globally
-chmod +x install.sh setup-repo.sh
-./install.sh
-
-# 3. For each project, set it up
-cd ~/your-project
-/path/to/claude-automation-setup/setup-repo.sh
-
-# 4. Fill in credentials
-#    Edit your-project/.env.local
-
-# 5. (Node projects) finish setup
-npm install --save-dev minimist husky
-npx husky install
-# Add the npm scripts to package.json (see setup-repo.sh output)
-
-# 6. Test
-npm run auto-commit -- --help
-```
-
-## The 11 Agents
-
-| Agent | Role |
-|-------|------|
-| agent-orchestrator | Master orchestrator, single entry point |
-| solutions-expert | Master system designer |
-| ticket-orchestrator | Generates Jira Epic/Story/Task hierarchy |
-| backend-expert | NestJS / FastAPI / MongoDB |
-| frontend-expert | React / Next.js / Astro + a11y |
-| iot-backend-expert | Raspberry Pi / GPIO / edge FastAPI |
-| pr-manager | Creates PRs (TELUS format) |
-| code-reviewer-pro | Automated review + security scanning |
-| aws-architect | AWS cloud architecture |
-| cdk-expert | Infrastructure as Code (CDK) |
-| documentation-generator | Docs + versioning + releases |
-
-## The 6 Skills
-
-1. IoT Backend Best Practices
-2. PR Description Formatter
-3. Semantic Versioning Control
-4. Auto-Commit Best Practices
-5. Auto-PR Creation Guide
-6. Jira Integration Patterns
-
-## Security
-
-**Never commit `.env.local`.** It contains your Jira and GitHub tokens.
-The `.gitignore` here blocks it, and `setup-repo.sh` adds it to each repo's
-`.gitignore` automatically. Use `.env.example` as the shareable template.
-
-## MCPs
-
-Level 3 needs three MCP servers (Jira, Git, GitHub). See
-`docs/MCPS-configuracion-completa.md` for setup. These are configured once in
-your Claude Code config, not per-repo.
-
-## Node vs Python Projects
-
-The scripts (`.js`) and Husky hooks assume a Node.js project. For Python
-projects (like a FastAPI service), you'll need to adapt:
-- Replace npm scripts with direct `node scripts/x.js` calls or Python equivalents
-- Use Python's `pre-commit` framework instead of Husky, or call the hooks directly
-
-See `docs/` for details.
-
-## License
-
-Internal use. Keep this repository private if it contains organization-specific
-conventions.
+- **Guía de uso e instalación** → [`USAGE.md`](USAGE.md)
+- **Presupuesto de contexto** → [`docs/context-budget.md`](docs/context-budget.md)
+- **Configuración de MCPs** → [`docs/MCPS-configuracion-completa.md`](docs/MCPS-configuracion-completa.md)
+- **GitHub Actions** → [`docs/GITHUB-ACTIONS-SETUP.md`](docs/GITHUB-ACTIONS-SETUP.md)
+- **Git Hooks (Husky)** → [`docs/HOOKS-husky-complete.md`](docs/HOOKS-husky-complete.md)
+- **Setup completo Nivel 3** → [`docs/SETUP-COMPLETO-NIVEL-3.md`](docs/SETUP-COMPLETO-NIVEL-3.md)

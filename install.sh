@@ -58,12 +58,19 @@ AGENT_COUNT=$(ls global/agents/*.md | wc -l)
 echo -e "${GREEN}✅ Installed $AGENT_COUNT agents${NC}"
 
 # ----------------------------------------------------------------------------
-# 4. Install skills (6)
+# 4. Install skills (12 — folder structure)
 # ----------------------------------------------------------------------------
 echo ""
 echo -e "${BLUE}Installing skills...${NC}"
-cp global/skills/*.md "$CLAUDE_DIR/skills/"
-SKILL_COUNT=$(ls global/skills/*.md | wc -l)
+mkdir -p "$CLAUDE_DIR/skills"
+for SKILL_DIR in global/skills/*/; do
+  if [ -d "$SKILL_DIR" ]; then
+    SKILL_NAME=$(basename "$SKILL_DIR")
+    mkdir -p "$CLAUDE_DIR/skills/$SKILL_NAME"
+    cp "$SKILL_DIR"SKILL.md "$CLAUDE_DIR/skills/$SKILL_NAME/SKILL.md" 2>/dev/null || true
+  fi
+done
+SKILL_COUNT=$(ls -d global/skills/*/ 2>/dev/null | wc -l)
 echo -e "${GREEN}✅ Installed $SKILL_COUNT skills${NC}"
 
 # ----------------------------------------------------------------------------
@@ -79,9 +86,13 @@ echo "  - $AGENT_COUNT agents"
 echo "  - $SKILL_COUNT skills"
 echo ""
 echo -e "${YELLOW}NEXT — per-repo setup (run in each project):${NC}"
-echo "  See README.md → 'Per-Repository Setup'"
-echo "  1. Copy per-repo/scripts/ to your repo"
-echo "  2. Copy per-repo/.husky/ to your repo"
-echo "  3. cp .env.example <your-repo>/.env.local and fill it in"
-echo "  4. Add npm scripts to package.json"
+echo "  /path/to/setup-repo.sh    (from the root of your project)"
+echo ""
+echo -e "${YELLOW}PORTABILIDAD (en cada repo, después de setup-repo.sh):${NC}"
+echo "  bash setup-portability.sh"
+echo "  → Crea CLAUDE.md, GEMINI.md, .github/copilot-instructions.md como symlinks a AGENTS.md"
+echo ""
+echo -e "${YELLOW}CROSS-TOOL skills:${NC}"
+echo "  Las skills en ~/.claude/skills/ son legibles por Cursor/Gemini/Codex."
+echo "  Ver global/skills/README.md para instrucciones por herramienta."
 echo ""

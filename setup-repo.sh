@@ -112,6 +112,70 @@ if [ ! -f "$TARGET_DIR/.gitignore" ] || ! grep -q ".env.local" "$TARGET_DIR/.git
 fi
 
 # ----------------------------------------------------------------------------
+# 2c. Copy AGENTS.md template (SSOT)
+# ----------------------------------------------------------------------------
+if [ ! -f "$TARGET_DIR/AGENTS.md" ]; then
+  echo -e "${BLUE}Copying AGENTS.md template (SSOT)...${NC}"
+  cp "$SETUP_DIR/per-repo/AGENTS.md" "$TARGET_DIR/AGENTS.md"
+  cp "$SETUP_DIR/per-repo/setup-portability.sh" "$TARGET_DIR/setup-portability.sh"
+  chmod +x "$TARGET_DIR/setup-portability.sh"
+  echo -e "${GREEN}✅ AGENTS.md copied (edit it for this project)${NC}"
+  echo -e "${GREEN}✅ setup-portability.sh copied${NC}"
+else
+  echo -e "${YELLOW}⚠️  AGENTS.md already exists — left untouched${NC}"
+fi
+
+# ----------------------------------------------------------------------------
+# 2d. Copy .mcp.json
+# ----------------------------------------------------------------------------
+if [ ! -f "$TARGET_DIR/.mcp.json" ]; then
+  echo -e "${BLUE}Copying .mcp.json...${NC}"
+  cp "$SETUP_DIR/per-repo/.mcp.json" "$TARGET_DIR/.mcp.json"
+  echo -e "${GREEN}✅ .mcp.json copied${NC}"
+else
+  echo -e "${YELLOW}⚠️  .mcp.json already exists — left untouched${NC}"
+fi
+
+# ----------------------------------------------------------------------------
+# 2e. Copy .claude/rules/
+# ----------------------------------------------------------------------------
+echo -e "${BLUE}Copying .claude/rules/...${NC}"
+mkdir -p "$TARGET_DIR/.claude/rules"
+cp "$SETUP_DIR"/per-repo/.claude/rules/*.md "$TARGET_DIR/.claude/rules/"
+echo -e "${GREEN}✅ Rules copied to .claude/rules/${NC}"
+
+# ----------------------------------------------------------------------------
+# 2f. Copy .cursor/rules/
+# ----------------------------------------------------------------------------
+echo -e "${BLUE}Copying .cursor/rules/...${NC}"
+mkdir -p "$TARGET_DIR/.cursor/rules"
+cp "$SETUP_DIR"/per-repo/.cursor/rules/*.mdc "$TARGET_DIR/.cursor/rules/"
+echo -e "${GREEN}✅ Rules copied to .cursor/rules/${NC}"
+
+# ----------------------------------------------------------------------------
+# 2g. Copy .claude/hooks/
+# ----------------------------------------------------------------------------
+echo -e "${BLUE}Copying .claude/hooks/...${NC}"
+mkdir -p "$TARGET_DIR/.claude/hooks/pre-tool-use"
+mkdir -p "$TARGET_DIR/.claude/hooks/post-tool-use"
+cp "$SETUP_DIR/per-repo/.claude/hooks/pre-tool-use/block-secrets.sh" "$TARGET_DIR/.claude/hooks/pre-tool-use/"
+cp "$SETUP_DIR/per-repo/.claude/hooks/post-tool-use/lint-after-write.sh" "$TARGET_DIR/.claude/hooks/post-tool-use/"
+chmod +x "$TARGET_DIR/.claude/hooks/pre-tool-use/block-secrets.sh"
+chmod +x "$TARGET_DIR/.claude/hooks/post-tool-use/lint-after-write.sh"
+echo -e "${GREEN}✅ Hooks copied to .claude/hooks/${NC}"
+
+# ----------------------------------------------------------------------------
+# 2h. Copy .claude/settings.json (hook registrations)
+# ----------------------------------------------------------------------------
+if [ ! -f "$TARGET_DIR/.claude/settings.json" ]; then
+  echo -e "${BLUE}Copying .claude/settings.json...${NC}"
+  cp "$SETUP_DIR/per-repo/.claude/settings.json" "$TARGET_DIR/.claude/settings.json"
+  echo -e "${GREEN}✅ .claude/settings.json copied${NC}"
+else
+  echo -e "${YELLOW}⚠️  .claude/settings.json already exists — left untouched${NC}"
+fi
+
+# ----------------------------------------------------------------------------
 # 5. Node-specific setup
 # ----------------------------------------------------------------------------
 if [ "$IS_NODE" = true ]; then
@@ -138,12 +202,11 @@ echo -e "${GREEN}  Repo setup complete!${NC}"
 echo -e "${GREEN}========================================${NC}"
 echo ""
 echo -e "${YELLOW}DON'T FORGET:${NC}"
-echo "  1. Edit .env.local with your real credentials (for local scripts)"
-echo "  2. Run: npm install --save-dev minimist husky"
-echo "  3. Add the npm scripts shown above to package.json"
-echo "  4. Test: npm run auto-commit -- --help"
-echo "  5. Add GitHub secrets for Actions (Settings → Secrets → Actions):"
-echo "       JIRA_HOST, JIRA_EMAIL, JIRA_API_TOKEN"
-echo "  6. Commit & push .github/workflows/ to activate the Actions"
-echo "  7. (Optional) Set branch protection to require the PR checks"
+echo "  1. Edit AGENTS.md for this project (tech stack, commands, architecture)"
+echo "  2. Run: bash setup-portability.sh  (creates CLAUDE.md, GEMINI.md symlinks)"
+echo "  3. Edit .env.local with your real credentials"
+echo "  4. Edit .claude/rules/design.md — set 'Design preset: velocity|vice|quiet'"
+echo "  5. For Node.js: npm install --save-dev minimist husky && npx husky install"
+echo "  6. Add GitHub secrets: JIRA_HOST, JIRA_EMAIL, JIRA_API_TOKEN"
+echo "  7. Push .github/workflows/ to activate GitHub Actions"
 echo ""
