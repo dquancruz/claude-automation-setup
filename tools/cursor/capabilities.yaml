@@ -1,0 +1,55 @@
+# tools/cursor/capabilities.yaml
+#
+# Documents what this setup materializes for Cursor. Based on the worked
+# example in docs/AI-SETUP-PLAN-v2.md section 5.1, adjusted to this repo's
+# real paths/conventions. Nothing under tools/cursor/ is a generated tree
+# committed to this repo — every artifact declared here is rendered fresh
+# into the TARGET repo by tools/cursor/enable.sh / setup-repo.sh, on every
+# run (section 7's explicit rejection of committing generated trees).
+#
+# See tools/claude/capabilities.yaml for the format this generalizes.
+
+name: cursor
+
+instructions:
+  mechanism: native              # Cursor reads AGENTS.md natively — no symlink needed (unlike Claude's CLAUDE.md)
+  filename: AGENTS.md
+  path: "AGENTS.md"               # repo-root, copied by setup-repo.sh (tool-agnostic step, shared with Claude)
+  global_scope: unsupported       # no ~/.cursor/AGENTS.md equivalent
+
+agents:
+  mechanism: custom-mode          # tier B (AI-SETUP-PLAN-v2.md section 2.2): full body preserved, manual invocation
+  path: ".cursor/modes/"          # ONE MARKDOWN FILE PER AGENT — not ".cursor/modes.json" as section 5.1's
+                                   # shorthand example implied. Section 2.2 explicitly specifies "un archivo
+                                   # por agente"; that is treated as authoritative here since it is the more
+                                   # detailed spec. Full rationale documented at the top of
+                                   # tools/cursor/adapt/agent-to-mode.sh.
+  global_scope: unsupported       # Custom Modes are project-scoped in Cursor — no ~/.cursor/modes/ equivalent
+                                   # (confirmed in AI-SETUP-PLAN-v2.md section 5.3)
+
+skills:
+  mechanism: reference            # not rendered by Fase 3 — declared here for the future generic engine
+                                   # (lib/render.mjs, Fase 5); reference means name+path only, no content copy
+  path: ".cursor/skills/"
+  global_scope: unsupported       # confirmed: Cursor has no personal/global skills directory
+
+rules:
+  mechanism: native-mdc           # tools/cursor/adapt/rule-to-mdc.sh renders registry/rules/*.md -> *.mdc here
+  path: ".cursor/rules/"
+  global_scope: manual-only       # "User Rules" exist in Settings -> Rules -> User but live in Cursor's
+                                   # internal app storage, not a plain file this setup can write to safely —
+                                   # not automated (see AI-SETUP-PLAN-v2.md section 5.3)
+
+hooks:
+  mechanism: none                 # Cursor has no PreToolUse/PostToolUse equivalent among supported tools today
+  global_scope: unsupported
+
+mcp:
+  mechanism: native               # Cursor reads .cursor/mcp.json directly, no symlink needed
+  path: ".cursor/mcp.json"
+  global_scope: supported         # ~/.cursor/mcp.json (%USERPROFILE%\.cursor\mcp.json on Windows) is a real,
+                                   # documented file — project-level wins on server-name conflict. Wiring this
+                                   # into install-global.sh is Fase 5, not implemented by this adapter yet.
+
+context_tier: B                   # see docs/AI-SETUP-PLAN-v2.md section 6
+max_instructions_lines: 300

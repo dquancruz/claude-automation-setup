@@ -145,12 +145,16 @@ cp "$SETUP_DIR"/registry/rules/*.md "$TARGET_DIR/.claude/rules/"
 echo -e "${GREEN}✅ Rules copied to .claude/rules/${NC}"
 
 # ----------------------------------------------------------------------------
-# 2f. Copy .cursor/rules/
+# 2f. Generate .cursor/rules/ (Cursor adapter — tools/cursor/adapt/rule-to-mdc.sh)
 # ----------------------------------------------------------------------------
-echo -e "${BLUE}Copying .cursor/rules/...${NC}"
+# registry/rules/*.md is the only source of truth — the .mdc files are
+# rendered fresh on every run, never hand-maintained, so they cannot drift
+# from registry/rules/ the way the old per-repo/.cursor/rules/*.mdc did
+# (see docs/RESTRUCTURE-2026-06.md).
+echo -e "${BLUE}Generating .cursor/rules/ from registry/rules/...${NC}"
 mkdir -p "$TARGET_DIR/.cursor/rules"
-cp "$SETUP_DIR"/per-repo/.cursor/rules/*.mdc "$TARGET_DIR/.cursor/rules/"
-echo -e "${GREEN}✅ Rules copied to .cursor/rules/${NC}"
+bash "$SETUP_DIR/tools/cursor/adapt/rule-to-mdc.sh" "$SETUP_DIR/registry/rules" "$TARGET_DIR/.cursor/rules"
+echo -e "${GREEN}✅ Rules generated in .cursor/rules/${NC}"
 
 # ----------------------------------------------------------------------------
 # 2g. Copy .claude/hooks/
@@ -169,7 +173,7 @@ echo -e "${GREEN}✅ Hooks copied to .claude/hooks/${NC}"
 # ----------------------------------------------------------------------------
 if [ ! -f "$TARGET_DIR/.claude/settings.json" ]; then
   echo -e "${BLUE}Copying .claude/settings.json...${NC}"
-  cp "$SETUP_DIR/per-repo/.claude/settings.json" "$TARGET_DIR/.claude/settings.json"
+  cp "$SETUP_DIR/tools/claude/settings.json" "$TARGET_DIR/.claude/settings.json"
   echo -e "${GREEN}✅ .claude/settings.json copied${NC}"
 else
   echo -e "${YELLOW}⚠️  .claude/settings.json already exists — left untouched${NC}"
