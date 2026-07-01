@@ -53,8 +53,8 @@ fi
 # ----------------------------------------------------------------------------
 echo ""
 echo -e "${BLUE}Installing agents...${NC}"
-cp global/agents/*.md "$CLAUDE_DIR/agents/"
-AGENT_COUNT=$(ls global/agents/*.md | wc -l)
+cp registry/agents/*.md "$CLAUDE_DIR/agents/"
+AGENT_COUNT=$(ls registry/agents/*.md | wc -l)
 echo -e "${GREEN}✅ Installed $AGENT_COUNT agents${NC}"
 
 # ----------------------------------------------------------------------------
@@ -63,14 +63,14 @@ echo -e "${GREEN}✅ Installed $AGENT_COUNT agents${NC}"
 echo ""
 echo -e "${BLUE}Installing skills...${NC}"
 mkdir -p "$CLAUDE_DIR/skills"
-for SKILL_DIR in global/skills/*/; do
+for SKILL_DIR in registry/skills/*/; do
   if [ -d "$SKILL_DIR" ]; then
     SKILL_NAME=$(basename "$SKILL_DIR")
     mkdir -p "$CLAUDE_DIR/skills/$SKILL_NAME"
     cp "$SKILL_DIR"SKILL.md "$CLAUDE_DIR/skills/$SKILL_NAME/SKILL.md" 2>/dev/null || true
   fi
 done
-SKILL_COUNT=$(ls -d global/skills/*/ 2>/dev/null | wc -l)
+SKILL_COUNT=$(ls -d registry/skills/*/ 2>/dev/null | wc -l)
 echo -e "${GREEN}✅ Installed $SKILL_COUNT skills${NC}"
 
 # ----------------------------------------------------------------------------
@@ -94,5 +94,5 @@ echo "  → Crea CLAUDE.md, GEMINI.md, .github/copilot-instructions.md como syml
 echo ""
 echo -e "${YELLOW}CROSS-TOOL skills:${NC}"
 echo "  Las skills en ~/.claude/skills/ son legibles por Cursor/Gemini/Codex."
-echo "  Ver global/skills/README.md para instrucciones por herramienta."
+echo "  Ver registry/skills/README.md para instrucciones por herramienta."
 echo ""

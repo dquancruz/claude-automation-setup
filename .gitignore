@@ -20,6 +20,11 @@ credentials/
 **/*secret*
 **/*credentials*
 
+# Excepción: registry/ es el código fuente de este propio setup (agentes, skills,
+# hooks, rules). Nombres legítimos como block-secrets.sh o dependency-and-secrets-audit/
+# coinciden por substring con los patrones de arriba, pero no son credenciales filtradas.
+!registry/**
+
 # ============================================================================
 # NODE
 # ============================================================================
