@@ -1,0 +1,46 @@
+# tools/claude/capabilities.yaml
+#
+# Documents what Claude Code ALREADY does today via install.sh + setup-repo.sh +
+# setup-portability.sh. This file does not change any behavior — it is the
+# explicit contract that Fase 2 of docs/AI-SETUP-PLAN-v2.md introduces so that
+# tools/claude/enable.sh (and, later, a generic bin/enable-repo.sh) can read
+# "what Claude supports" from data instead of hardcoded per-tool logic.
+#
+# See tools/cursor/capabilities.yaml (Fase 3) for the format this generalizes.
+
+name: claude
+
+instructions:
+  mechanism: symlink             # Claude Code reads CLAUDE.md, not AGENTS.md directly
+  filename: CLAUDE.md            # created by registry/templates/setup-portability.sh: ln -sf AGENTS.md CLAUDE.md
+  path: "CLAUDE.md"              # repo-root symlink -> AGENTS.md (the real SSOT)
+  global_scope: unsupported      # no ~/.claude/CLAUDE.md equivalent is installed by this setup today
+
+agents:
+  mechanism: native              # real subagents: isolated context per agent, automatic + parallel invocation
+  path: ".claude/agents/"        # not installed per-repo today — this setup only installs agents globally
+  global_scope: supported        # install.sh: cp registry/agents/*.md ~/.claude/agents/ (12 agents)
+
+skills:
+  mechanism: native-autodiscovery # Claude auto-discovers and progressively loads SKILL.md by relevance
+  path: ".claude/skills/"         # not installed per-repo today — same as agents, global-only
+  global_scope: supported         # install.sh: cp registry/skills/*/SKILL.md ~/.claude/skills/<name>/
+
+rules:
+  mechanism: native               # native path-matched rules, no rendering step needed
+  path: ".claude/rules/"          # setup-repo.sh: cp registry/rules/*.md .claude/rules/
+  global_scope: unsupported       # rules are path-scoped per repo; no global rules directory exists today
+
+hooks:
+  mechanism: native               # PreToolUse / PostToolUse hooks, exclusive to Claude Code among supported tools
+  path: ".claude/hooks/"          # setup-repo.sh: cp registry/hooks/{pre,post}-tool-use/*.sh .claude/hooks/...
+  registration: ".claude/settings.json"  # tools/claude/settings.json is the template copied into the target repo
+  global_scope: unsupported       # hooks are registered per repo; no global hook registration today
+
+mcp:
+  mechanism: native                # Claude reads .mcp.json directly, no symlink needed
+  path: ".mcp.json"                # setup-repo.sh: cp registry/templates/.mcp.json .mcp.json (repo-root)
+  global_scope: unsupported        # install.sh does not write any user-level MCP config today
+
+context_tier: A                    # see docs/AI-SETUP-PLAN-v2.md section 6 — full progressive disclosure
+max_instructions_lines: null       # no fixed cap: agents/skills load on demand, not always-in-context
