@@ -57,7 +57,7 @@ echo ""
 # ----------------------------------------------------------------------------
 echo -e "${BLUE}Copying scripts...${NC}"
 mkdir -p "$TARGET_DIR/scripts"
-cp "$SETUP_DIR"/per-repo/scripts/*.js "$TARGET_DIR/scripts/"
+cp "$SETUP_DIR"/registry/scripts/*.js "$TARGET_DIR/scripts/"
 echo -e "${GREEN}✅ Scripts copied to scripts/${NC}"
 
 # ----------------------------------------------------------------------------
@@ -65,11 +65,11 @@ echo -e "${GREEN}✅ Scripts copied to scripts/${NC}"
 # ----------------------------------------------------------------------------
 echo -e "${BLUE}Copying Husky hooks...${NC}"
 mkdir -p "$TARGET_DIR/.husky"
-cp "$SETUP_DIR"/per-repo/.husky/pre-commit "$TARGET_DIR/.husky/"
-cp "$SETUP_DIR"/per-repo/.husky/prepare-commit-msg "$TARGET_DIR/.husky/"
-cp "$SETUP_DIR"/per-repo/.husky/post-merge "$TARGET_DIR/.husky/"
-cp "$SETUP_DIR"/per-repo/.husky/pre-tag "$TARGET_DIR/.husky/"
-cp "$SETUP_DIR"/per-repo/.husky/.gitignore "$TARGET_DIR/.husky/"
+cp "$SETUP_DIR"/registry/templates/husky/pre-commit "$TARGET_DIR/.husky/"
+cp "$SETUP_DIR"/registry/templates/husky/prepare-commit-msg "$TARGET_DIR/.husky/"
+cp "$SETUP_DIR"/registry/templates/husky/post-merge "$TARGET_DIR/.husky/"
+cp "$SETUP_DIR"/registry/templates/husky/pre-tag "$TARGET_DIR/.husky/"
+cp "$SETUP_DIR"/registry/templates/husky/.gitignore "$TARGET_DIR/.husky/"
 chmod +x "$TARGET_DIR"/.husky/pre-commit
 chmod +x "$TARGET_DIR"/.husky/prepare-commit-msg
 chmod +x "$TARGET_DIR"/.husky/post-merge
@@ -81,8 +81,8 @@ echo -e "${GREEN}✅ Hooks copied to .husky/${NC}"
 # ----------------------------------------------------------------------------
 echo -e "${BLUE}Copying GitHub Actions workflows...${NC}"
 mkdir -p "$TARGET_DIR/.github/workflows"
-cp "$SETUP_DIR"/per-repo/.github/workflows/pr-validation.yml "$TARGET_DIR/.github/workflows/"
-cp "$SETUP_DIR"/per-repo/.github/workflows/on-merge.yml "$TARGET_DIR/.github/workflows/"
+cp "$SETUP_DIR"/registry/templates/github/workflows/pr-validation.yml "$TARGET_DIR/.github/workflows/"
+cp "$SETUP_DIR"/registry/templates/github/workflows/on-merge.yml "$TARGET_DIR/.github/workflows/"
 echo -e "${GREEN}✅ Workflows copied to .github/workflows/${NC}"
 echo -e "${YELLOW}   ⚠️  Remember to add Jira secrets in GitHub:${NC}"
 echo -e "${YELLOW}      Settings → Secrets and variables → Actions${NC}"
@@ -116,8 +116,8 @@ fi
 # ----------------------------------------------------------------------------
 if [ ! -f "$TARGET_DIR/AGENTS.md" ]; then
   echo -e "${BLUE}Copying AGENTS.md template (SSOT)...${NC}"
-  cp "$SETUP_DIR/per-repo/AGENTS.md" "$TARGET_DIR/AGENTS.md"
-  cp "$SETUP_DIR/per-repo/setup-portability.sh" "$TARGET_DIR/setup-portability.sh"
+  cp "$SETUP_DIR/registry/templates/AGENTS.md" "$TARGET_DIR/AGENTS.md"
+  cp "$SETUP_DIR/registry/templates/setup-portability.sh" "$TARGET_DIR/setup-portability.sh"
   chmod +x "$TARGET_DIR/setup-portability.sh"
   echo -e "${GREEN}✅ AGENTS.md copied (edit it for this project)${NC}"
   echo -e "${GREEN}✅ setup-portability.sh copied${NC}"
@@ -130,7 +130,7 @@ fi
 # ----------------------------------------------------------------------------
 if [ ! -f "$TARGET_DIR/.mcp.json" ]; then
   echo -e "${BLUE}Copying .mcp.json...${NC}"
-  cp "$SETUP_DIR/per-repo/.mcp.json" "$TARGET_DIR/.mcp.json"
+  cp "$SETUP_DIR/registry/templates/.mcp.json" "$TARGET_DIR/.mcp.json"
   echo -e "${GREEN}✅ .mcp.json copied${NC}"
 else
   echo -e "${YELLOW}⚠️  .mcp.json already exists — left untouched${NC}"
@@ -141,7 +141,7 @@ fi
 # ----------------------------------------------------------------------------
 echo -e "${BLUE}Copying .claude/rules/...${NC}"
 mkdir -p "$TARGET_DIR/.claude/rules"
-cp "$SETUP_DIR"/per-repo/.claude/rules/*.md "$TARGET_DIR/.claude/rules/"
+cp "$SETUP_DIR"/registry/rules/*.md "$TARGET_DIR/.claude/rules/"
 echo -e "${GREEN}✅ Rules copied to .claude/rules/${NC}"
 
 # ----------------------------------------------------------------------------
@@ -158,8 +158,8 @@ echo -e "${GREEN}✅ Rules copied to .cursor/rules/${NC}"
 echo -e "${BLUE}Copying .claude/hooks/...${NC}"
 mkdir -p "$TARGET_DIR/.claude/hooks/pre-tool-use"
 mkdir -p "$TARGET_DIR/.claude/hooks/post-tool-use"
-cp "$SETUP_DIR/per-repo/.claude/hooks/pre-tool-use/block-secrets.sh" "$TARGET_DIR/.claude/hooks/pre-tool-use/"
-cp "$SETUP_DIR/per-repo/.claude/hooks/post-tool-use/lint-after-write.sh" "$TARGET_DIR/.claude/hooks/post-tool-use/"
+cp "$SETUP_DIR/registry/hooks/pre-tool-use/block-secrets.sh" "$TARGET_DIR/.claude/hooks/pre-tool-use/"
+cp "$SETUP_DIR/registry/hooks/post-tool-use/lint-after-write.sh" "$TARGET_DIR/.claude/hooks/post-tool-use/"
 chmod +x "$TARGET_DIR/.claude/hooks/pre-tool-use/block-secrets.sh"
 chmod +x "$TARGET_DIR/.claude/hooks/post-tool-use/lint-after-write.sh"
 echo -e "${GREEN}✅ Hooks copied to .claude/hooks/${NC}"
