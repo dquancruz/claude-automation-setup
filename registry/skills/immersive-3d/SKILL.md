@@ -3,6 +3,7 @@ name: immersive-3d
 description: Técnicas de 3D/WebGL para experiencias inmersivas en el frontend. Cargar cuando el preset activo sea velocity o vice, o cuando el usuario pida efectos 3D, WebGL, canvas animado o experiencias inmersivas.
 argument-hint: --preset velocity|vice --component hero|background|product
 tools: [Read, Edit, Write]
+tier: extended
 ---
 
 # Immersive 3D — WebGL en Frontend

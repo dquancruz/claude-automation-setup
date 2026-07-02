@@ -3,6 +3,7 @@ name: semantic-versioning
 description: Detecta el bump de versión correcto (MAJOR/MINOR/PATCH) a partir de los commits, actualiza package.json, genera el CHANGELOG, crea el git tag y publica el GitHub Release. Usar cuando se va a hacer un release o cuando documentation-generator pide bump de versión.
 argument-hint: --dry-run
 tools: [Bash, Read, Edit]
+tier: core
 ---
 
 # Semantic Versioning Control

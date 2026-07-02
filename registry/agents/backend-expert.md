@@ -2,6 +2,7 @@
 name: backend-expert
 description: Backend implementation specialist for NestJS, Node.js, FastAPI, Python, MongoDB, and IoT/Raspberry Pi systems. Use when implementing APIs, endpoints, business logic, database models, WebSocket handlers, or GPIO/hardware integrations. Follows TDD-first approach and auto-commits validated work. Called by agent-orchestrator for backend stories.
 tools: Read, Write, Edit, Bash, Glob, Grep
+tier: core
 ---
 
 ## Essence

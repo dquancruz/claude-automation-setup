@@ -3,6 +3,7 @@ name: auto-pr
 description: Guía para crear PRs automáticamente via script. Usar cuando los commits están en un feature branch, los tests pasan en CI, y es momento de abrir el PR en GitHub.
 argument-hint: --branch feat/add-auth --jira PROJ-123 --draft
 tools: [Bash]
+tier: core
 ---
 
 # Auto-PR Creation Guide

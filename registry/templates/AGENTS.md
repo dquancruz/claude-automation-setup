@@ -23,8 +23,8 @@
 - Ver `docs/` para arquitectura detallada.
 
 ## Convenciones
-- <Server components por defecto; 'use client' solo cuando sea necesario>
-- <Soft deletes — no borrar físicamente>
+- Convenciones detalladas por dominio (backend, frontend, testing, security, design) viven en `.claude/rules/*.md` — se cargan automáticamente por path, no se repiten aquí.
+- <Convención específica de este proyecto no cubierta por las rules, si aplica>
 - Commits: Conventional Commits (ver skill `semantic-versioning`).
 
 ## Workflow de agentes (Claude Code)

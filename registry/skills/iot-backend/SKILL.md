@@ -3,6 +3,7 @@ name: iot-backend
 description: Patrones especializados para backends IoT en Raspberry Pi con GPIO, FastAPI, MongoDB async y WebSockets. Usar cuando se trabaje con hardware, limit switches, scoring de bowling, o cualquier integración edge-device.
 argument-hint: --component gpio|scoring|websocket
 tools: [Read, Write, Edit, Bash]
+tier: extended
 ---
 
 # IoT Backend Best Practices

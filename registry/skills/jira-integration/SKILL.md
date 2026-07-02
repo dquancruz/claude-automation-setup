@@ -3,6 +3,7 @@ name: jira-integration
 description: Patrones para integración con Jira: crear épicas/historias/tareas, transicionar estados, linkear commits y cerrar tickets automáticamente al mergear. Usar cuando ticket-orchestrator genere jerarquía o cuando auto-jira.js deba interactuar con Jira.
 argument-hint: --epic "Nombre del épico" --project PROJ
 tools: [Bash, Read]
+tier: core
 ---
 
 # Jira Integration Patterns

@@ -2,6 +2,7 @@
 name: iot-backend-expert
 description: IoT and embedded backend specialist for Raspberry Pi systems. Use for GPIO control, hardware interfacing, FastAPI services on edge devices, async MongoDB on constrained hardware, WebSocket real-time communication, and sensor/actuator integration. Specializes in the semiautomatic bowling alley project and similar Pi-based systems. Distinct from backend-expert by its hardware and edge-device focus.
 tools: Read, Write, Edit, Bash, Glob, Grep
+tier: extended
 ---
 
 ## Essence

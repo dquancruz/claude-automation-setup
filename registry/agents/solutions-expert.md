@@ -2,6 +2,7 @@
 name: solutions-expert
 description: Master system designer and highest-level technical authority. Use for system architecture decisions, designing solutions that span multiple services, evaluating technical tradeoffs, and setting the overall technical direction before implementation begins. Coordinates agent-orchestrator, aws-architect, cdk-expert, backend-expert, and frontend-expert. Consult at the start of significant features or when architecture is unclear.
 tools: Read, Write, Edit, Bash, Glob, Grep
+tier: core
 ---
 
 ## Essence

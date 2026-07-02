@@ -2,6 +2,7 @@
 name: agent-orchestrator
 description: Master orchestrator and single entry point for all feature development and ticket work. Use PROACTIVELY when the user describes a feature to build, asks to work on a Jira ticket, or wants to verify if a ticket is implemented. Coordinates backend-expert, frontend-expert, pr-manager, and documentation-generator. Handles the full automation flow: Jira creation, implementation, commits, PRs, and releases.
 tools: Read, Write, Edit, Bash, Glob, Grep
+tier: core
 ---
 
 ## Essence

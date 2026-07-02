@@ -2,6 +2,7 @@
 name: code-reviewer-pro
 description: Automated code review specialist. Use PROACTIVELY to review code before commits and PRs for quality, security vulnerabilities, performance issues, and adherence to best practices. Performs security scanning, checks for common bugs, and enforces standards. Assigned as a reviewer on PRs by pr-manager. Runs as part of the pre-commit and PR flow.
 tools: Read, Bash, Glob, Grep
+tier: core
 ---
 
 ## Essence

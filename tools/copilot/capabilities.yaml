@@ -1,0 +1,85 @@
+# tools/copilot/capabilities.yaml
+#
+# Documents what this setup materializes for GitHub Copilot — tier C
+# (docs/AI-SETUP-PLAN-v2.md section 2.2): a single always-loaded instructions
+# file, no native agent/skill concept, no conditional loading. Nothing under
+# tools/copilot/ is a generated tree committed to this repo — the rendered
+# .github/copilot-instructions.md is written into the TARGET repo by
+# tools/copilot/enable.sh (via lib/condense.mjs), on every run (section 7's
+# explicit rejection of committing generated trees).
+#
+# Verified against GitHub's own documentation this session (not assumed —
+# same standard as the Cursor investigation in section 5.3):
+#   https://docs.github.com/en/copilot/customizing-copilot/adding-repository-custom-instructions-for-github-copilot
+#   https://code.visualstudio.com/docs/copilot/copilot-customization
+#
+# See tools/claude/capabilities.yaml (Fase 2) and tools/cursor/capabilities.yaml
+# (Fase 3) for the format this generalizes.
+
+name: copilot
+
+instructions:
+  mechanism: native               # Copilot reads .github/copilot-instructions.md natively, repo-root — no symlink
+  filename: .github/copilot-instructions.md  # confirmed real, documented location (GitHub Docs, "Writing your own
+                                   # copilot-instructions.md file": "In the root of your repository, create a file
+                                   # named .github/copilot-instructions.md")
+  path: ".github/copilot-instructions.md"
+  global_scope: unsupported       # no ~/.github/copilot-instructions.md equivalent — Copilot also supports a
+                                   # personal-instructions mechanism (github.com Settings -> Copilot -> personal
+                                   # instructions) but that lives in GitHub's own account settings, not a file this
+                                   # setup can write to from install-global.sh — same "manual-only" shape as
+                                   # Cursor's User Rules (section 5.3), not implemented as automation here.
+
+agents:
+  mechanism: condensed            # tier C (section 2.2): roster collapsed into instructions, no native agent concept
+  path: ".github/copilot-instructions.md"  # same file as instructions — condensed agents ARE the instructions body
+  global_scope: unsupported
+
+skills:
+  mechanism: condensed            # same file, roster of name + first-sentence description
+  path: ".github/copilot-instructions.md"
+  global_scope: unsupported
+
+rules:
+  mechanism: condensed            # per-area summary, not per-path native files (Copilot's path-scoped
+                                   # *.instructions.md mechanism exists — see note below — but condensing into the
+                                   # single main file is what section 6's tier-C row specifies for this Fase)
+  path: ".github/copilot-instructions.md"
+  global_scope: unsupported
+  # Note (documented, not acted on this Fase): GitHub Copilot DOES support path-scoped instructions via
+  # .github/instructions/NAME.instructions.md with an `applyTo: <glob>` frontmatter key — closer to tier B's
+  # native-mdc mechanism than tier C's single-file condensation. That native path-matching mechanism is a real,
+  # documented Copilot capability (confirmed this session) that this Fase deliberately does NOT use, to keep
+  # Copilot's rendering scoped to exactly what section 8's Fase 4 specifies ("rules: condensed"). Revisit in a
+  # later phase if Copilot's rules mechanism should be upgraded from tier C to tier B for this repo.
+
+hooks:
+  mechanism: none                 # Copilot has no PreToolUse/PostToolUse equivalent among supported tools today
+  global_scope: unsupported
+
+mcp:
+  mechanism: partial              # Copilot DOES support MCP servers (confirmed: VS Code Copilot Chat + Copilot
+                                   # coding agent both read MCP config), but the file location and schema differ
+                                   # by surface (VS Code: .vscode/mcp.json; Copilot coding agent: repository/org
+                                   # MCP settings in GitHub UI, not a plain committed file) — unlike Cursor's single
+                                   # native .cursor/mcp.json, there is no one path this setup can render to
+                                   # uniformly across every Copilot surface. Declared "partial" rather than
+                                   # "native" for that reason; not wired into enable.sh in this Fase (Fase 4 scope
+                                   # is condense.mjs + the instructions file only — see AI-SETUP-PLAN-v2.md section
+                                   # 8's Fase 4 checklist, which does not mention mcp rendering).
+  path: null
+  global_scope: unsupported
+
+context_tier: C                   # see docs/AI-SETUP-PLAN-v2.md section 6 — no conditional loading, all-or-nothing
+
+# GitHub's own documented constraint on copilot-instructions.md, found verbatim in the prompt GitHub recommends
+# for auto-generating this file (docs.github.com, "Asking Copilot cloud agent to generate a copilot-instructions.md
+# file" section, <Limitations> block): "Instructions must be no longer than 2 pages." There is no other numeric
+# line/token limit published by GitHub or VS Code docs for this file (checked this session — unlike Cursor's rule
+# files, Copilot does not document a per-rule line cap). Converting "2 pages" to a concrete line budget: standard
+# publishing convention is ~450-500 words/page; instructions-style markdown (headings, bullets, blank lines between
+# entries) runs shorter per line than dense prose, so ~100 lines/page is a reasonable estimate for THIS content
+# shape -> 2 pages ~= 200 lines. Set deliberately BELOW Cursor's 300 (tools/cursor/capabilities.yaml) since tier C
+# has zero conditional loading (section 6's table: "Nada — todo lo que no está inline no existe para la tool"),
+# making it the most budget-constrained tier of the three.
+max_instructions_lines: 200

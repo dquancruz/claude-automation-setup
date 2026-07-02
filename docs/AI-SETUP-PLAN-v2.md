@@ -1,6 +1,6 @@
 # AI-SETUP-PLAN-v2 — Arquitectura Multi-Tool Extensible
 
-> **Estado:** PLAN — pendiente de aprobación. Este documento NO implementa nada. No modifica `global/`, `per-repo/`, scripts ni configuración alguna. Es solo el diseño a revisar antes de autorizar cualquier ejecución.
+> **Estado:** EN EJECUCIÓN — Fases 1-4 de la sección 8 ya están implementadas y commiteadas (ver estado por fase ahí). Fases 5-6 pendientes. El plan se considera aprobado por la ejecución continuada de sus fases en orden; este documento ya no es solo diseño especulativo.
 > **Para:** revisión humana → luego, si se aprueba, ejecución por Claude Code en fases (sección 8).
 > **Reemplaza en intención (no en archivo) a:** el intento de reestructuración `shared/` + `tools/claude/` + `tools/cursor/` con codegen documentado en `docs/RESTRUCTURE-2026-06.md` y evaluado en `docs/PLAN-VS-REALIDAD-2026-07.md`. Este plan retoma la idea de fondo (SSOT + adaptadores) pero corrige los motivos concretos de rechazo (ver sección 7).
 
@@ -296,6 +296,7 @@ Aprendiendo de `docs/RESTRUCTURE-2026-06.md`:
 Cada fase deja el repo en estado funcional y verificable — el pipeline Claude-only actual **no se degrada en ningún punto intermedio**.
 
 ### Fase 1 — Reorganizar a `registry/` (mover, no reescribir)
+**Estado: ✅ Hecho** (commit `25476d0`, más `tier: core|extended` agregado después en el commit `f049a32` de la Fase 4 — el frontmatter de tiers estaba especificado aquí pero se implementó junto con `condense.mjs`, su primer consumidor real).
 - Mover `global/agents/` → `registry/agents/` (agregar `## Essence` a cada uno — único contenido nuevo).
 - Mover `global/skills/` → `registry/skills/` (sin cambios de contenido).
 - Mover las partes tool-agnósticas de `per-repo/` (`scripts/`, `.husky/`, `.github/workflows/`, `AGENTS.md`, `.mcp.json`, `setup-portability.sh`) → `registry/templates/` y `registry/scripts/`.
@@ -305,27 +306,32 @@ Cada fase deja el repo en estado funcional y verificable — el pipeline Claude-
 - **Verificación:** correr el `setup-repo.sh` actualizado en un repo de prueba y confirmar que el resultado es idéntico al de hoy.
 
 ### Fase 2 — Adaptador Claude explícito
+**Estado: ✅ Hecho** (commit `1f271f9`).
 - Crear `tools/claude/capabilities.yaml` (documenta lo que Claude Code ya hace hoy — no cambia comportamiento).
 - Crear `tools/claude/enable.sh` como envoltorio delgado de la lógica que hoy vive en `install.sh`/`setup-repo.sh`.
 - **Verificación:** `tools/claude/enable.sh` produce exactamente el mismo árbol que `setup-repo.sh` hoy.
 
 ### Fase 3 — Adaptador Cursor con tiers reales
+**Estado: ✅ Hecho** (commit `1f271f9`). Verificado end-to-end en repo de prueba: `.cursor/rules/*.mdc` byte a byte idéntico al `.md` fuente (frontmatter + body), sin overlap de `globs` entre dominios (`src/api/**` no matchea `frontend`).
 - Crear `tools/cursor/capabilities.yaml` (agents: custom-mode, rules: native-mdc, skills: reference, hooks: none, mcp: native).
 - Crear `tools/cursor/adapt/rule-to-mdc.sh` (generaliza la función bash ya validada en el intento anterior — sin nuevas dependencias).
 - Crear `tools/cursor/adapt/agent-to-mode.sh` (agente canónico completo → Custom Mode de Cursor, un archivo por agente).
 - **Verificación:** habilitar un repo de prueba solo con `--tools cursor` y confirmar que `.cursor/rules/*.mdc` coincide byte a byte con el `.md` fuente (mismo criterio de verificación que ya se usó en `docs/RESTRUCTURE-2026-06.md`), y que los 12 Custom Modes existen con contenido completo.
 
 ### Fase 4 — Motor de condensación + primer tool tier C (Copilot)
+**Estado: ✅ Hecho** (commits `f049a32` tier frontmatter, `aef123b` motor + adaptador). Verificado end-to-end en repo de prueba: salida real de 119 líneas para el `registry/` de este repo (bajo el presupuesto de 200, sin necesidad de recorte), los 12 nombres de agentes y 11 de skills presentes, las 4 reglas críticas de `registry/templates/AGENTS.md` copiadas byte a byte, y degradación correcta del cascade de recorte probada con un presupuesto artificial de 40 líneas (colapsa a resumen pero nunca omite un nombre).
 - Implementar `lib/condense.mjs` con el algoritmo determinístico de la sección 6.
 - Crear `tools/copilot/capabilities.yaml` (agents: condensed, skills: condensed, rules: condensed, hooks: none, mcp: partial).
 - **Verificación:** `copilot-instructions.md` generado respeta `max_instructions_lines`, incluye el roster de 12 agentes condensado y no omite ninguna regla `YOU MUST`.
 
 ### Fase 5 — Generalizar `enable-repo.sh` / `install-global.sh`
+**Estado: ⬜ Pendiente.**
 - Reemplazar cualquier lógica hardcodeada por tool con un loop genérico sobre `tools/*/capabilities.yaml`.
 - Agregar `tools/_template/` con instrucciones inline de cómo agregar una tool nueva.
 - **Prueba de extensibilidad:** agregar una tool más (real o simulada, ej. Gemini CLI) usando solo el template, sin tocar `registry/`, `lib/`, ni otros adaptadores, para validar el costo bajo prometido en el requisito 1.
 
 ### Fase 6 — Documentación y cierre
+**Estado: ⬜ Pendiente.**
 - Regenerar `docs/tool-compatibility.md` para que sea 1:1 con `tools/*/capabilities.yaml` (evita que vuelva a divergir de la realidad, como pasó con el `.mdc` vs `.md`).
 - Extender `docs/context-budget.md` con la tabla de tiers (sección 6).
 - Actualizar `README.md`/`USAGE.md` con la nueva estructura y el comando único `enable-repo.sh`.
@@ -335,11 +341,11 @@ Cada fase deja el repo en estado funcional y verificable — el pipeline Claude-
 
 ## 9. Checklist de verificación final
 
-- [ ] `registry/` es la única fuente de conocimiento — cero contenido duplicado entre agentes/skills/rules/hooks.
-- [ ] Ningún artefacto generado por tool está comiteado en este repo — todo se genera en destino vía `enable-repo.sh`/`install-global.sh`.
-- [ ] Los 12 agentes tienen `## Essence` y existen en las tres formas (verbatim, custom-mode, condensado) según la tool habilitada.
-- [ ] `docs/tool-compatibility.md` se deriva de `tools/*/capabilities.yaml`, no se mantiene a mano.
-- [ ] Agregar una tool nueva no requiere tocar `registry/`, `lib/`, ni otros adaptadores — solo `tools/<nueva>/`.
-- [ ] El pipeline Claude-only actual sigue funcionando igual en cada fase (sin regresión).
-- [ ] `docs/context-budget.md` documenta los 3 tiers y el criterio de recorte determinístico.
-- [ ] `plan.md` y `docs/RESTRUCTURE-2026-06.md` quedan como registro histórico, no se borran.
+- [x] `registry/` es la única fuente de conocimiento — cero contenido duplicado entre agentes/skills/rules/hooks. (Se encontró y corrigió una duplicación puntual en `registry/templates/AGENTS.md` vs `registry/rules/{frontend,backend}.md` — commit `6b5b847`.)
+- [x] Ningún artefacto generado por tool está comiteado en este repo — todo se genera en destino vía `enable-repo.sh`/`install-global.sh`. (Verificado: no hay `.mdc` ni `copilot-instructions.md` trackeados en git; solo `capabilities.yaml`/`enable.sh`/adaptadores, que son código, no salida generada.)
+- [x] Los 12 agentes tienen `## Essence` y existen en las tres formas (verbatim, custom-mode, condensado) según la tool habilitada. (Verbatim: `tools/claude/enable.sh`. Custom-mode: `tools/cursor/adapt/agent-to-mode.sh`. Condensado: `lib/condense.mjs` vía `tools/copilot/enable.sh`.)
+- [ ] `docs/tool-compatibility.md` se deriva de `tools/*/capabilities.yaml`, no se mantiene a mano. (Fase 6.)
+- [ ] Agregar una tool nueva no requiere tocar `registry/`, `lib/`, ni otros adaptadores — solo `tools/<nueva>/`. (Fase 5 — `enable-repo.sh` aún no generaliza el loop sobre `tools/*/capabilities.yaml`; hoy cada adaptador se invoca por separado.)
+- [x] El pipeline Claude-only actual sigue funcionando igual en cada fase (sin regresión). (Verificado en la Fase 3: `.claude/rules/*.md` generado por `setup-repo.sh` idéntico al de antes de la migración a `registry/`.)
+- [ ] `docs/context-budget.md` documenta los 3 tiers y el criterio de recorte determinístico. (Fase 6.)
+- [x] `plan.md` y `docs/RESTRUCTURE-2026-06.md` quedan como registro histórico, no se borran.

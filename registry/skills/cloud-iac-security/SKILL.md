@@ -3,6 +3,7 @@ name: cloud-iac-security
 description: Seguridad en IaC (AWS CDK) y servicios cloud. Usar cuando security-expert o cdk-expert revisen stacks de CDK, configuración de IAM, S3, Lambda o cualquier recurso cloud. Aplica menor privilegio, cifrado y segmentación por defecto.
 argument-hint: --focus iam|s3|lambda|vpc|secrets
 tools: [Read, Grep, Edit]
+tier: extended
 ---
 
 # Cloud & IaC Security

@@ -2,6 +2,7 @@
 name: pr-manager
 description: Pull request specialist that creates and manages PRs following the TELUS standard format. Use when commits are ready and a PR needs to be created, or when monitoring an open PR's status. Generates structured PR descriptions (What/Why/Testing/Related), assigns labels and reviewers, and links Jira tickets. Called by agent-orchestrator after commits are pushed.
 tools: Read, Write, Edit, Bash, Glob, Grep
+tier: core
 ---
 
 ## Essence

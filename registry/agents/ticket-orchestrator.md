@@ -2,6 +2,7 @@
 name: ticket-orchestrator
 description: Ticket hierarchy generator that breaks features into well-structured Jira Epics, Stories, and Tasks with proper acceptance criteria and estimates. Use when a feature needs to be decomposed into trackable work items. Consults solutions-expert for architecture and agent-orchestrator for execution planning. Often called automatically by agent-orchestrator.
 tools: Read, Write, Edit, Bash, Glob, Grep
+tier: extended
 ---
 
 ## Essence

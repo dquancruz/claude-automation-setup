@@ -3,6 +3,7 @@ name: pr-formatter
 description: Formatea descripciones de pull requests en el estándar TELUS (What/Why/Testing/Related). Usar cuando se va a crear un PR o cuando pr-manager necesite generar la descripción.
 argument-hint: --branch feat/add-auth --jira PROJ-123
 tools: [Bash, Read]
+tier: core
 ---
 
 # PR Description Formatter
