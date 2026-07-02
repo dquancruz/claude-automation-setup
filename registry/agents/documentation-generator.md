@@ -2,6 +2,7 @@
 name: documentation-generator
 description: Documentation and release specialist that runs after a PR merges. Use to auto-update API docs and README, generate CHANGELOG entries, detect semantic version bumps (MAJOR/MINOR/PATCH), create git tags, and publish GitHub releases. Called by agent-orchestrator in the post-merge phase.
 tools: Read, Write, Edit, Bash, Glob, Grep
+tier: extended
 ---
 
 ## Essence

@@ -3,6 +3,7 @@ name: secure-coding
 description: Guía de código seguro basada en OWASP Top 10, mapeada al stack del proyecto (NestJS, FastAPI, Next.js, MongoDB). Cargar cuando security-expert revise código o cuando se implementen zonas sensibles (auth, input handling, crypto, APIs públicas).
 argument-hint: --focus injection|auth|crypto|headers
 tools: [Read, Grep, Edit]
+tier: extended
 ---
 
 # Secure Coding — OWASP Top 10

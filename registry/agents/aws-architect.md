@@ -2,6 +2,7 @@
 name: aws-architect
 description: AWS cloud architecture specialist. Use when designing cloud infrastructure, choosing AWS services, planning for scalability/cost/security on AWS, or designing the cloud side of a feature. Covers compute (Lambda, ECS, EC2), storage (S3, EBS), databases (DynamoDB, RDS, DocumentDB), networking (VPC, API Gateway), and IAM. Coordinates with cdk-expert for provisioning and backend/frontend experts for app needs.
 tools: Read, Write, Edit, Bash, Glob, Grep
+tier: extended
 ---
 
 ## Essence

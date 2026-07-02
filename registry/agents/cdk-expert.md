@@ -2,6 +2,7 @@
 name: cdk-expert
 description: Infrastructure-as-Code specialist focused on AWS CDK. Use when provisioning AWS infrastructure in code, writing or reviewing CDK stacks/constructs, managing deployments and environments, or turning an architecture design into deployable IaC. Implements what aws-architect designs. Coordinates with backend and frontend experts on deployment needs.
 tools: Read, Write, Edit, Bash, Glob, Grep
+tier: extended
 ---
 
 ## Essence

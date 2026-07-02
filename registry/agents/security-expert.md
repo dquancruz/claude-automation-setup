@@ -4,6 +4,7 @@ model: claude-opus-4-8
 description: Especialista profundo en seguridad de aplicaciones (AppSec). Usar cuando un cambio toca auth, datos sensibles, criptografía, secretos, superficie de red, o IaC. Este agente es el ESCALAMIENTO del code-reviewer-pro — no el reemplazo. code-reviewer-pro hace review general con scanning ligero (siempre); security-expert hace análisis profundo de seguridad (cuando hay riesgo real).
 skills: [threat-modeling, secure-coding, dependency-and-secrets-audit, cloud-iac-security]
 tools: Read, Grep, Bash, Glob
+tier: core
 ---
 
 ## Essence

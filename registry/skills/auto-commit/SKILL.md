@@ -3,6 +3,7 @@ name: auto-commit
 description: Genera mensajes de commit semánticos siguiendo Conventional Commits. Usar cuando el usuario quiera commitear cambios, pida "auto-commit", o cuando backend-expert/frontend-expert hayan validado código listo para commit.
 argument-hint: --message "feat: add auth" --scope api --jira PROJ-123
 tools: [Bash, Read]
+tier: core
 ---
 
 # Auto-Commit Best Practices

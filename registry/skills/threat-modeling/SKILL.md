@@ -3,6 +3,7 @@ name: threat-modeling
 description: Modelado de amenazas con STRIDE, límites de confianza y análisis de superficie de ataque. Correr en fase de DISEÑO junto a solutions-expert, antes de implementar. Produce un modelo de amenazas con riesgos rankeados y mitigaciones concretas.
 argument-hint: --component auth|api|infra|iot
 tools: [Read, Write]
+tier: extended
 ---
 
 # Threat Modeling — STRIDE

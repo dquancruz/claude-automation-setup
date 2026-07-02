@@ -3,6 +3,7 @@ name: frontend-expert
 description: Frontend implementation specialist for React, Next.js, and Astro with a strong focus on accessibility (a11y), responsive design, and TypeScript. Use when building UI components, pages, forms, date pickers, dashboards, or any user-facing interface. Auto-commits validated work. Called by agent-orchestrator for frontend stories.
 skills: [design-system, immersive-3d, auto-commit, pr-formatter]
 tools: Read, Write, Edit, Bash, Glob, Grep
+tier: core
 ---
 
 ## Essence

@@ -3,6 +3,7 @@ name: design-system
 description: Registro de presets de diseño y principios de UI. Cargar SIEMPRE al hacer trabajo de frontend/UI. Define los presets velocity/vice/quiet con sus tokens (color, tipografía, escala, motion) y los anti-patrones universales.
 argument-hint: --preset velocity|vice|quiet
 tools: [Read, Edit]
+tier: core
 ---
 
 # Design System — Presets
